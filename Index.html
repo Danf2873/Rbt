@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEX Push Back - Competition Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #2c3e50;
+            overflow-x: auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            min-width: 120px;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab.active {
+            background: #3498db;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .content {
+            padding: 20px;
+            min-height: 500px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #eee;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .card-subtitle {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .calculator-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .calculator-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .input-group label {
+            flex: 1;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 120px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .score-display h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .match-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .match-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .match-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .match-time {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .match-notes {
+            color: #27ae60;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #e74c3c;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .webview-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .webview-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .success {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .info-box {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .nav-tabs {
+                justify-content: space-around;
+            }
+
+            .nav-tab {
+                padding: 12px 8px;
+                font-size: 0.8rem;
+                min-width: 80px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .input-group input,
+            .input-group select {
+                width: 100%;
+                margin-top: 5px;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .content {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .score-display h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <h1>🤖 VEX Push Back</h1>
+            <p>Your ultimate VEX Push Back competition companion</p>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="teams">🏆 Teams</button>
+            <button class="nav-tab" data-tab="events">📅 Events</button>
+            <button class="nav-tab" data-tab="matches">⚔️ Matches</button>
+            <button class="nav-tab" data-tab="calculator">🧮 Calculator</button>
+            <button class="nav-tab" data-tab="manual">📖 Manual</button>
+        </nav>
+
+        <main class="content">
+            <!-- Teams Tab -->
+            <div id="teams" class="tab-content active">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="🔍 Search for teams..." id="team-search">
+                </div>
+                <div id="teams-results">
+                    <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                        <h3>🔍 Team Search</h3>
+                        <p>Start typing in the search box above to find VEX teams</p>
+                        <div style="margin-top: 20px; font-size: 0.9rem;">
+                            <p>Search by team number, name, or organization</p>
+                            <p>Example: "24A", "Eagles", "High School"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Tab -->
+            <div id="events" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #2c3e50;">📅 Recent VEX Events</h2>
+                <button class="btn" id="refresh-events-btn">🔄 Refresh Events</button>
+                <div id="events-results">
+                    <div class="info-box">
+                        Click "Refresh Events" to load the latest VEX competitions
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matches Tab -->
+            <div id="matches" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #2c3e50;">⚔️ Event Matches</h2>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <input type="number" class="search-input" placeholder="Enter Event ID" id="event-id-input" style="flex: 1; min-width: 200px;">
+                    <button class="btn" id="load-matches-btn">📥 Load Matches</button>
+                </div>
+                <div id="matches-results">
+                    <div class="info-box">
+                        Enter an Event ID above to view all matches for that event
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator Tab -->
+            <div id="calculator" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #2c3e50; text-align: center;">🧮 VEX Push Back Score Calculator</h2>
+                
+                <div class="calculator-grid">
+                    <div class="calculator-section">
+                        <h3>🚀 Autonomous Period</h3>
+                        <div class="input-group">
+                            <label>Cubes Pushed (2 pts each):</label>
+                            <input type="number" id="auto-cubes-pushed" min="0" max="20" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Cubes in Goal (4 pts each):</label>
+                            <input type="number" id="auto-cubes-goal" min="0" max="15" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Robot Parked (10 pts):</label>
+                            <select id="auto-parked">
+                                <option value="0">No</option>
+                                <option value="10">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="calculator-section">
+                        <h3>🎮 Driver Control</h3>
+                        <div class="input-group">
+                            <label>Cubes Pushed (1 pt each):</label>
+                            <input type="number" id="driver-cubes-pushed" min="0" max="50" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Cubes in Goal (2 pts each):</label>
+                            <input type="number" id="driver-cubes-goal" min="0" max="30" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Elevation (20 pts):</label>
+                            <select id="elevation">
+                                <option value="0">No Elevation</option>
+                                <option value="20">Robot Elevated</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn" id="calculate-btn">⚡ Calculate Score</button>
+                    <button class="btn btn-secondary" id="reset-btn">🔄 Reset</button>
+                </div>
+
+                <div class="score-display" id="score-display">
+                    <h2>Total Score: 0</h2>
+                    <p>Enter values above to calculate your VEX Push Back score</p>
+                </div>
+            </div>
+
+            <!-- Manual Tab -->
+            <div id="manual" class="tab-content">
+                <div class="webview-container">
+                    <div class="webview-header">
+                        📖 VEX Robotics Competition Game Manual
+                    </div>
+                    <div style="padding: 20px; text-align: center;">
+                        <p style="margin-bottom: 15px;">Access the official VEX game manual and rules:</p>
+                        <a href="https://www.vexrobotics.com/v5/competition/vrc-current-game" target="_blank" class="btn">
+                            📖 Open VEX Game Manual
+                        </a>
+                        <div style="margin-top: 20px; background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: left;">
+                            <h3 style="color: #2c3e50; margin-bottom: 15px;">📋 VEX Push Back Quick Rules:</h3>
+                            <ul style="line-height: 1.6; color: #555;">
+                                <li><strong>Autonomous (15 seconds):</strong> Robot operates independently</li>
+                                <li><strong>Driver Control (1:45):</strong> Teams control their robots</li>
+                                <li><strong>Objective:</strong> Move and score cubes in designated areas</li>
+                                <li><strong>Parking:</strong> End autonomous period in parking zone</li>
+                                <li><strong>Elevation:</strong> Climb platform during endgame</li>
+                                <li><strong>Alliance:</strong> Work with your partner team</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Match Notes -->
+    <div id="notes-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-modal">&times;</span>
+            <h3 id="modal-title">Match Notes</h3>
+            <textarea id="notes-textarea" class="notes-textarea" placeholder="Enter your notes for this match..."></textarea>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn btn-secondary" id="cancel-notes">Cancel</button>
+                <button class="btn" id="save-notes" style="margin-left: 10px;">💾 Save Notes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE = 'https://www.robotevents.com/api/v2';
+        const API_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiOGVmNTljNDQwODQ0MTMyNmQ3OTUxODVlNjU2NzVkMjIyMWI3ZDgzODU1ZDBiMzZlMTc2YzZlZmI0YjA0MWYwNjU4ZDQ3YzhjZDg5ZWU2ZTAiLCJpYXQiOjE3NTQ2OTE5NDQuNzA4NTE4LCJuYmYiOjE3NTQ2OTE5NDQuNzA4NTE5OSwiZXhwIjoyNzAxMzc2NzQ0LjcwMjI3ODEsInN1YiI6IjE0NTkxMCIsInNjb3BlcyI6W119.fE8vrUkl1TGajZoMd8FFufpIZGMoJaCHCrDJyd6GxGO3iR1Qz4xZ8OXRus8RiHZZraf-oINOAuUUZpQnKVEaa-ZhyUxrULrHYf6KOTrVbppLRiId84aMQOmgv0UuR7H0XEuijceTUNqneiHjJgHL8bwlqKBT65BdRr-Ggw00na3watSZGJqfbkGfDfo6E9Z9oDaOMpIs-EqAMP_bp2dc3wzcyqFRaoW9G--XlURTrezAKRU7c4NSlInVCLeVsCeyJwqf0eLo-_pIlHmvFc26GnKI5tc4_o7HXWIXU9Y2NIcjxPXvqs73Et_KKboMaei6lba2TkvQjBQuiupbiKcc89uuA3c0oeSh9JHM9I2HAu5617qVoy1HfxIr9NJ4avNI2WpvEBGra-_AUCF0DuGLgdiNKUPlsMosntEwQcNLpBlxP7eg6Kfd0y6O8mK63d0UEVsOjNFPq9oX5XiHamnxbMc7Mh8OBBY1P2SkGYdhof9DpLefhrmwaA3PU7zITJ-nqGOcyPgqqwWVXgYOIVzAWJEYpbhKJqe3Mj5SAIpw9kdIIgi3E7iy2cmgwSbku7_SKVI7S4OX2cl9wuk2IKbjInZ1M4jYofAf-jTqZ3PalE3ORugwp2ScuyQwjeRcyYEJ8b5vl27KRdTVWSiPJiJLXc49weCBS9_SolLfdrvwZHA';
+
+        // Global variables
+        let matchNotes = {};
+        let currentMatch = null;
+        let searchTimeout = null;
+
+        // Utility functions
+        function showMessage(message, type = 'info') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info-box';
+            messageDiv.textContent = message;
+            
+            const content = document.qu
